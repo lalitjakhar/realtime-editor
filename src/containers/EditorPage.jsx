@@ -24,23 +24,23 @@ const EditorPage = () => {
     const init = async () => {
       try {
         socketRef.current = await initSocket();
-  
+
         // Error handling for socket connection
-        socketRef.current.on("connect_error", handleErrors);
-        socketRef.current.on("connect_failed", handleErrors);
-  
-        function handleErrors(error) {
-          console.error("Socket connection error:", error);
-          toast.error("Socket connection failed, try again later.");
-          reactNavigator("/");
-        }
-  
+        // socketRef.current.on("connect_error", handleErrors);
+        // socketRef.current.on("connect_failed", handleErrors);
+
+        // function handleErrors(error) {
+        //   console.error("Socket connection error:", error);
+        //   toast.error("Socket connection failed, try again later.");
+        //   reactNavigator("/");
+        // }
+
         // Joining the room
         socketRef.current.emit(ACTIONS.JOIN, {
           roomId,
           username: location.state?.username,
         });
-  
+
         // Listening for joined event
         socketRef.current.on(
           ACTIONS.JOINED,
@@ -56,7 +56,7 @@ const EditorPage = () => {
             });
           }
         );
-  
+
         // Listening for disconnected event
         socketRef.current.on(ACTIONS.DISCONNECTED, ({ socketId, username }) => {
           toast.success(`${username} left the room.`);
@@ -70,9 +70,9 @@ const EditorPage = () => {
         reactNavigator("/");
       }
     };
-  
+
     init();
-  
+
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -83,7 +83,7 @@ const EditorPage = () => {
       }
     };
   }, [location.state?.username, reactNavigator, roomId]);
-  
+
   async function copyRoomId() {
     try {
       await navigator.clipboard.writeText(roomId);
@@ -111,9 +111,12 @@ const EditorPage = () => {
           </div>
           <h3>Connected</h3>
           <div className="clientsList">
-            {clients.map((client) => (
-              <Client key={client.socketId} username={client.username} />
-            ))}
+            {clients.map((client) => {
+              console.log("clientclientclientclientclient", client);
+              return (
+                <Client key={client.socketId} username={client.username} />
+              );
+            })}
           </div>
         </div>
         <button className="btn copyBtn" onClick={copyRoomId}>
